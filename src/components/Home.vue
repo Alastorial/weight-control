@@ -59,7 +59,7 @@
           label.ui-title-4 Укажите начало и конец рассматриваемого промежутка
           label(for='date') Начало периода:
           input#date(type='date' name='date' v-model="chartStart")
-          label(for='date') Начало периода:
+          label(for='date') Конец периода:
           input#date(type='date' name='date' v-model="chartEnd")
 
         .button.button--round.button-primary(
