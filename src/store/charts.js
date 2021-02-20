@@ -31,10 +31,9 @@ export default {
       commit('clearError')
       commit('setLoading', true)
       try {
-        // Получили теги из бд
+        // Получили из бд
         const chart = await firebase.database().ref('charts').once('value')
-        // console.log(tag)
-        // Получили значения тегов
+
         const charts = chart.val()
         // console.log(tags)
 
