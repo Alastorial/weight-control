@@ -5,6 +5,7 @@
         .auth
             .auth__banner
               h1.ui-title-2 by 1TGION
+              img(src='./PIC_6.png')
             .auth__form
               span.ui-title-2 Registration
               form(@submit.prevent="onSubmit")
