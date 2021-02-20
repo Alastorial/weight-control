@@ -5,7 +5,7 @@
     section
       .container
         h1.ui-title-1 Home
-        label Ведите учет своего веса с помощью графика
+        label Ведите учет своей массы с помощью графика
 
         .button.button--round.button-primary(
             v-if="!chartActive"
