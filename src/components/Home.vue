@@ -45,7 +45,6 @@
           @click="filterMonth"
         ) За последние 30 дней
 
-        // Данные фильтры еще не вступили в силу
         .button.button--round.button-primary(
           @click="filterHalf"
           v-if="chartActive1"
@@ -56,8 +55,15 @@
           v-if="chartActive1"
         ) За последний год
 
+        p(v-if="chartActive1")
+          label.ui-title-4 Укажите начало и конец рассматриваемого промежутка
+          label(for='date') Начало периода:
+          input#date(type='date' name='date' v-model="chartStart")
+          label(for='date') Начало периода:
+          input#date(type='date' name='date' v-model="chartEnd")
+
         .button.button--round.button-primary(
-          @click="filterYear"
+          @click="filterCast"
           v-if="chartActive1"
         ) Задать свой период
 
@@ -79,6 +85,8 @@ google.charts.load('current', {'packages':['corechart']})
 export default {
   data () {
     return {
+      chartStart: '',
+      chartEnd: '',
       chartLoad: 'Загрузить мой график',
       chartActive: false,
       chartActive1: false,
@@ -91,6 +99,12 @@ export default {
   },
 
   methods: {
+    filterCast () {
+      if (this.chartStart && this.chartEnd) {
+        this.filterChart = 1
+        this.drawChart()
+      }
+    },
     filterYear () {
       this.filterChart = 365
       this.drawChart()
@@ -174,7 +188,7 @@ export default {
           })
 
       } else {
-        console.log(this.loading);
+        // console.log(this.loading);
         this.drawChart()
       }
     },
@@ -329,7 +343,7 @@ export default {
                 this.$store.getters.charts[i].mass.slice(0, 2)[0] !== this.$store.getters.charts[i + 1].mass.slice(0, 2)[0]) {
 
                 chartDate.push(this.$store.getters.charts[i].mass.slice(0, 2))
-                console.log(this.$store.getters.charts[i].mass.slice(0, 2))
+                // console.log(this.$store.getters.charts[i].mass.slice(0, 2))
               } else if ((monthChart === 12 + monthWorld - 1 && (dayWorld + monthLen[monthChart]) - dayChart < 7 &&
                           this.$store.getters.charts[i].mass.slice(0, 2)[0] !== this.$store.getters.charts[i + 1].mass.slice(0, 2)[0])) {
                   chartDate.push(this.$store.getters.charts[i].mass.slice(0, 2))
@@ -571,8 +585,8 @@ export default {
             }
 
             if (this.$store.getters.charts[i].mass.slice(0, 2)[0] !== this.$store.getters.charts[i + 1].mass.slice(0, 2)[0] && yearChart == yearWorld) {
-              console.log(this.$store.getters.charts[i].mass.slice(0, 2)[0]);
-              console.log(this.$store.getters.charts[i + 1].mass.slice(0, 2)[0]);
+              // console.log(this.$store.getters.charts[i].mass.slice(0, 2)[0]);
+              // console.log(this.$store.getters.charts[i + 1].mass.slice(0, 2)[0]);
               if ((dayChart <= dayWorld && dayWorld - dayChart < 30 && monthChart === monthWorld ||
                 monthChart === monthWorld - 1 && (dayWorld + monthLen[monthChart]) - dayChart < 30) &&
                 this.$store.getters.charts[i].mass.slice(0, 2)[0] !== this.$store.getters.charts[i + 1].mass.slice(0, 2)[0]) {
@@ -840,11 +854,106 @@ export default {
               chartDate.push(this.$store.getters.charts[this.$store.getters.charts.length - 1].mass.slice(0, 2))
           }
 
+        } else if (this.filterChart) {
+
+          let lastDayChart = this.$store.getters.charts[this.$store.getters.charts.length - 1].mass.slice(0, 2)[0].split(' ')[0]
+          let lastMonthChart = this.$store.getters.charts[this.$store.getters.charts.length - 1].mass.slice(0, 2)[0].split(' ')[1]
+          let lastYearChart = this.$store.getters.charts[this.$store.getters.charts.length - 1].mass.slice(0, 2)[0].split(' ')[2]
+          let lastSelectTime = Date.parse(lastYearChart + '.' + lastMonthChart + '.' + lastDayChart)/1000
+
+          let startDay = parseInt(this.chartStart.split('-')[2])
+          let startMonth = parseInt(this.chartStart.split('-')[1])
+          let startYear = parseInt(this.chartStart.split('-')[0])
+          let startTime = Date.parse(startYear + '.' + startMonth + '.' + startDay)/1000
+          // console.log(startTime)
+
+          let endDay = parseInt(this.chartEnd.split('-')[2])
+          let endMonth = parseInt(this.chartEnd.split('-')[1])
+          let endYear = parseInt(this.chartEnd.split('-')[0])
+          let endTime = Date.parse(endYear + '.' + endMonth + '.' + endDay)/1000
+          // console.log(endTime)
+
+          // console.log(startTime)
+          // console.log(endTime)
+          // console.log(lastDayChart)
+          // console.log(lastMonthChart)
+
+          for (let i = 0; i < this.$store.getters.charts.length - 1; i++) {
+
+            let dayChart = this.$store.getters.charts[i].mass.slice(0, 2)[0].split(' ')[0]
+            let monthChart = this.$store.getters.charts[i].mass.slice(0, 2)[0].split(' ')[1]
+            let yearChart = this.$store.getters.charts[i].mass.slice(0, 2)[0].split(' ')[2]
+            // console.log(dayChart)
+            // console.log(monthChart)
+            // console.log(yearChart)
+            switch (monthChart) {
+              case 'янв':
+                monthChart = 0;
+                break
+              case 'фев':
+                monthChart = 1;
+                break
+              case 'мар':
+                monthChart = 2;
+                break
+              case 'апр':
+                monthChart = 3;
+                break
+              case 'май':
+                monthChart = 4;
+                break
+              case 'июн':
+                monthChart = 5;
+                break
+              case 'июл':
+                monthChart = 6;
+                break
+              case 'авг':
+                monthChart = 7;
+                break
+              case 'сен':
+                monthChart = 8;
+                break
+              case 'окт':
+                monthChart = 9;
+                break
+              case 'ноя':
+                monthChart = 10;
+                break
+              case 'дек':
+                monthChart = 11;
+                break
+            }
+            monthChart += 1
+
+            let selectTime = Date.parse(yearChart + '.' + monthChart + '.' + dayChart)/1000
+            // console.log(selectTime, this.$store.getters.charts[i].mass.slice(0, 2)[0].split(' ')
+
+            if (this.$store.getters.charts[i].mass.slice(0, 2)[0] !== this.$store.getters.charts[i + 1].mass.slice(0, 2)[0]) {
+
+              if (startTime <= selectTime && selectTime <= endTime) {
+                // console.log("Креветка")
+                chartDate.push(this.$store.getters.charts[i].mass.slice(0, 2))
+
+              }
+            }
+
+          }
+
+          // Добавляем последний элемент, если он удовлетворяет условиям
+          if (startTime <= lastSelectTime && lastSelectTime <= endTime) {
+
+              chartDate.push(this.$store.getters.charts[this.$store.getters.charts.length - 1].mass.slice(0, 2))
+          }
+
         }
 
         // console.log(chartDate);
 
         // Функция по очистке массива от года
+        if (chartDate.length === 1) {
+          return
+        }
         for (let i = 1; i < chartDate.length; i++) {
           chartDate[i][0] = chartDate[i][0].split(' ')[0] + ' ' + chartDate[i][0].split(' ')[1]
         }
@@ -873,7 +982,7 @@ export default {
         } catch (error) {
           console.log('wait');
         }
-      }, 2000)
+      }, 1800)
 
       // console.log(chartDate)
     },
