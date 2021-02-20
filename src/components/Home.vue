@@ -21,7 +21,7 @@
             @click="newWeigth"
           ) Отправить
           .button.button--round.button-primary(
-            v-if="chartActive"
+            v-if="chartActive1"
             @click="drawChart"
 
           ) Обновить размеры графика
@@ -197,7 +197,7 @@ export default {
       this.chartLoad = 'Loading...'
       setTimeout(() => {
         this.chartActive = true
-        this.chartActive1 = true
+
         google.charts.load('current', {'packages':['corechart']});
 
         let chartDate = [
@@ -978,7 +978,7 @@ export default {
 
         chart.draw(data, options)
         this.chartActive = true
-
+        this.chartActive1 = true
         } catch (error) {
           console.log('wait');
         }
