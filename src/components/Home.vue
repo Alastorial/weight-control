@@ -56,7 +56,7 @@
         ) За последний год
 
         p(v-if="chartActive1")
-          label.ui-title-4 Укажите начало и конец рассматриваемого промежутка
+          label Укажите начало и конец рассматриваемого промежутка
           label(for='date') Начало периода:
           input#date(type='date' name='date' v-model="chartStart")
           label(for='date') Конец периода:
@@ -1052,14 +1052,14 @@ export default {
   #curve_chart
     width: 1000px
   .but
-    bottom: -600px
+    bottom: -500px
 
 @media screen and (max-width: 780px)
   #curve_chart
     width: 700px
   .but
     position: absolute;
-    bottom: -750px;
+    bottom: -920px;
 
 @media screen and (max-width: 490px)
   #curve_chart
@@ -1067,6 +1067,6 @@ export default {
     left: -30px
   .but
     position: absolute;
-    bottom: -980px;
+    bottom: -1130px;
 
 </style>
