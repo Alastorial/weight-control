@@ -13,20 +13,14 @@
           ) {{ chartLoad }}
 
         .footer
-          label(for="ageRangeField") Выберите месяц
 
           label(for='weigthField') Укажите вашу массу на сегодня
           input#weigthField(type='text' placeholder='Масса' v-model='chartWeigth')
           .button.button--round.button-primary(
             @click="newWeigth"
           ) Отправить
-          .button.button--round.button-primary(
-            v-if="chartActive1"
-            @click="drawChart"
 
-          ) Обновить размеры графика
-
-        #curve_chart(style="" v-if="checkUser")
+        #curve_chart(style="" v-if="checkUser") {{ drawChart() }}
       .container.but(style="")
         .button.button--round.button-primary(
           @click="filterAll"
@@ -194,6 +188,9 @@ export default {
     },
 
     drawChart() {
+      console.log(123)
+      // window.addEventListener('resize', this.drawChart())
+
       this.chartLoad = 'Loading...'
       setTimeout(() => {
         this.chartActive = true
@@ -871,12 +868,6 @@ export default {
           let endMonth = parseInt(this.chartEnd.split('-')[1])
           let endYear = parseInt(this.chartEnd.split('-')[0])
           let endTime = Date.parse(endYear + '.' + endMonth + '.' + endDay)/1000
-          // console.log(endTime)
-
-          // console.log(startTime)
-          // console.log(endTime)
-          // console.log(lastDayChart)
-          // console.log(lastMonthChart)
 
           for (let i = 0; i < this.$store.getters.charts.length - 1; i++) {
 
@@ -982,8 +973,28 @@ export default {
         } catch (error) {
           console.log('wait');
         }
-      }, 1800)
 
+        // Отслеживание изменения размера окна
+        window.onresize = function( event ) {try{
+          let data = google.visualization.arrayToDataTable(chartDate);
+
+          let options = {
+            title: 'Your Weigth',
+            curveType: 'function',
+            legend: { position: 'bottom' }
+          };
+
+          var chart =  new google.visualization.LineChart(document.getElementById('curve_chart'))
+
+          chart.draw(data, options)
+          this.chartActive = true
+          this.chartActive1 = true
+          } catch (error) {
+            console.log('wait');
+          }
+        }
+
+      }, 1800)
       // console.log(chartDate)
     },
     googleDate (date) {
@@ -1007,7 +1018,16 @@ export default {
     charts () {
       return this.$store.getters.charts
     }
-  }
+  },
+  // mounted: {
+  //   function() {
+  //     window.addEventListener('resize',function(){
+
+  //     this.drawChart()
+  //   })
+  //   }
+
+  // }
 
 }
 
